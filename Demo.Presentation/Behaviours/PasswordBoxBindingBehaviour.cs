@@ -8,7 +8,7 @@ using System.Windows.Interactivity;
 namespace Demo.Presentation.Behaviours
 {
     /// <summary>
-    /// A bevhiour that listens for PasswordChanged events from a <see cref="PasswordBox"/> and
+    /// A behaviour that listens for PasswordChanged events from a <see cref="PasswordBox"/> and
     /// exposes it as a DependencyProperty to allow binding to a property in our ViewModel. 
     /// </summary>
     /// <remarks>
