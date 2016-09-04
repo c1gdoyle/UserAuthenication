@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets or sets whether the authenication succeeded.
         /// </summary>
-        public bool Success { get; set; }
+        public bool IsSuccessful { get; set; }
 
         /// <summary>
         /// Gets or sets the details of authenication to display.

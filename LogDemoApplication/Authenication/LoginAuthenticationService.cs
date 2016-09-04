@@ -1,31 +1,93 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Security;
 using Demo.DataAccess.Base;
 using Demo.Security.Base;
 
 namespace LogDemoApplication.Authenication
 {
+    /// <summary>
+    /// An implemenation of <see cref="ILoginAuthenicationService"/> that checks passwords entered into the Login form
+    /// against user information stored in a configured SQL data-base to authenicate.
+    /// </summary>
     public class LoginAuthenticationService : ILoginAuthenicationService
     {
         private readonly IDataAccessLayerFacade _dataAccess;
         private readonly IEncryptionCipher _encryptionCipher;
+        private readonly string _encryptionKey;
 
-        public LoginAuthenticationService(IDataAccessLayerFacade dataAccess, IEncryptionCipher encryptionCipher)
+        /// <summary>
+        /// Initialises a new instance of <see cref="LoginAuthenticationService"/> with a specified dataAccess facade, cipher
+        /// and key.
+        /// </summary>
+        /// <param name="dataAccess">The data access facade.</param>
+        /// <param name="encryptionCipher">The encryption cipher.</param>
+        /// <param name="key">The encryption key.</param>
+        public LoginAuthenticationService(IDataAccessLayerFacade dataAccess, IEncryptionCipher encryptionCipher, string key)
         {
             _dataAccess = dataAccess;
             _encryptionCipher = encryptionCipher;
+            _encryptionKey = key;
         }
 
         public AuthenicationResult Authenicate(string userId, SecureString password)
         {
-            DataTable result = _dataAccess.FillTable(
-                "SELECT * FROM dbo.Users WHERE userId = {0}", 
-                "AuthenicationResult", 
-                new object[] { userId });
+            DataTable table = null;
+            string dataBasePassword;
+            try
+            {
+                table = GetData(userId);
+            }
+            catch(Exception)
+            {
+                return new AuthenicationResult { IsSuccessful = false, Message = "Login Authenication Failed. Unable to connect to database. Please contact support." };
+            }
 
-            string encrypytedPassword = (string)result.Rows[0]["Password"];
-                        
-            return null;
+            if (!TryGetPassWord(table, out dataBasePassword))
+            {
+                return new AuthenicationResult { IsSuccessful = false, Message = "Login Authenication Failed. Invalid userId or password." };
+            }
+
+            return ComparePasswords(password, dataBasePassword);
+        }
+
+        private DataTable GetData(string userId)
+        {
+            DataTable table = 
+                _dataAccess.FillTable(
+                    "SELECT password FROM dbo.Users WHERE userId = {0}", 
+                    "AuthenicationResult", 
+                    new object[] { userId });
+
+            return table;
+        }
+
+        private bool TryGetPassWord(DataTable table, out string dataBasePassword)
+        {
+            dataBasePassword = null;
+            if(table != null && table.Rows != null && table.Rows.Count == 1)
+            {
+                dataBasePassword = (string)table.Rows[0]["password"];
+                return true;
+            }
+            return false;
+        }
+
+        private AuthenicationResult ComparePasswords(SecureString password, string dataBasePassword)
+        {
+            byte[] salt = _encryptionCipher.GetSalt(dataBasePassword);
+            byte[] iv = _encryptionCipher.GetIV(dataBasePassword);
+
+            string hashedPassword = _encryptionCipher.Encrypt(password, _encryptionKey, salt, iv);
+
+            if (dataBasePassword == hashedPassword)
+            {
+                return new AuthenicationResult { IsSuccessful = true, Message = "Login Authenication successful." };
+            }
+            else
+            {
+                return new AuthenicationResult { IsSuccessful = false, Message = "Login Authenication Failed. Invalid userId or password." };
+            }
         }
     }
 }

@@ -35,7 +35,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Moq, Version=4.5.21.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.5.21\lib\net45\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,8 +59,25 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Authenication\LoginAuthenticationTests.cs" />
+    <Compile Include="Authenication\LoginAuthenticationServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Demo.DataAccess\Demo.DataAccess.csproj">
+      <Project>{15c3cec6-c37f-4346-af8a-534a1582afca}</Project>
+      <Name>Demo.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Demo.Security\Demo.Security.csproj">
+      <Project>{a3ba6fc3-467e-484d-a942-bd3dc194d513}</Project>
+      <Name>Demo.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogDemoApplication\LogDemoApplication.csproj">
+      <Project>{947b0440-ea2c-4589-a27b-69169916a80c}</Project>
+      <Name>LogDemoApplication</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
