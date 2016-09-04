@@ -4,9 +4,61 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LogDemoApplication"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:dP="clr-namespace:Demo.Presentation.Behaviours;assembly=Demo.Presentation"
+        dP:ViewControllerBehaviour.Controller="{Binding}"
         mc:Ignorable="d"
+        Icon="Resources/Login.ico"
         Title="Login" Height="350" Width="525">
     <Grid Background="LightGray">
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="UserName :" 
+                   Padding="5"
+                   FontFamily="Segoe UI"
+                   FontSize="12"/>
+        <TextBlock Grid.Row="1"
+                   Text="Password :" 
+                   Padding="5"
+                   FontFamily="Segoe UI"
+                   FontSize="12"/>
+        <TextBox Grid.Column="2"
+                 Text="{Binding Path=UserName}" 
+                 Padding="5"/>
+        <PasswordBox Grid.Row="1"
+                     Grid.Column="2"
+                     Padding="5">
+            <i:Interaction.Behaviors>
+                <dP:PasswordBoxBindingBehaviour Password="{Binding Path=Password}"/>
+            </i:Interaction.Behaviors>
+        </PasswordBox>
+        <Grid Grid.Row="2"
+              Grid.Column="2"
+              HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Login"
+                    Width="120"
+                    Padding="5"
+                    Command="{Binding Path=LoginCommand}"/>
+            <Button Grid.Column="2"
+                    Content="Exit"
+                    Width="120"
+                    Padding="5"
+                    Command="{Binding Path=ExitCommand}"/>
+
+        </Grid>
+
     </Grid>
 </Window>
