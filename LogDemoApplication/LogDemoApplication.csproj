@@ -70,6 +70,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Authenication\AuthenicationResult.cs" />
+    <Compile Include="Authenication\ILoginAuthenicationService.cs" />
+    <Compile Include="Authenication\LoginAuthenticationService.cs" />
     <Compile Include="ViewControllers\LoginDemoViewController.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -113,9 +115,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Demo.DataAccess\Demo.DataAccess.csproj">
+      <Project>{15c3cec6-c37f-4346-af8a-534a1582afca}</Project>
+      <Name>Demo.DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Demo.Presentation\Demo.Presentation.csproj">
       <Project>{af1b1d3f-3822-4393-9043-2a17fc757b5d}</Project>
       <Name>Demo.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Demo.Security\Demo.Security.csproj">
+      <Project>{a3ba6fc3-467e-484d-a942-bd3dc194d513}</Project>
+      <Name>Demo.Security</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

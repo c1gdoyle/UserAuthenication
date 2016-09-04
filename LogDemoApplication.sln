@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Security", "Demo.Secur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Security.Test", "Demo.Security.Test\Demo.Security.Test.csproj", "{5B35F67C-0770-4762-B9C3-47AEEA7336B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.LogDemoApplication.Test", "Demo.LogDemoApplication.Test\Demo.LogDemoApplication.Test.csproj", "{3CAD2E5F-B3C9-4AE1-9586-53FE90C8A410}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{5B35F67C-0770-4762-B9C3-47AEEA7336B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B35F67C-0770-4762-B9C3-47AEEA7336B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B35F67C-0770-4762-B9C3-47AEEA7336B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CAD2E5F-B3C9-4AE1-9586-53FE90C8A410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CAD2E5F-B3C9-4AE1-9586-53FE90C8A410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CAD2E5F-B3C9-4AE1-9586-53FE90C8A410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CAD2E5F-B3C9-4AE1-9586-53FE90C8A410}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,5 +69,6 @@ Global
 		{4F7A5AE5-1AD1-4EFB-AF7A-B3857349ED03} = {6760C8C3-4C15-4A05-A075-B3C627F2A093}
 		{A3BA6FC3-467E-484D-A942-BD3DC194D513} = {6FE50746-BE4B-4BB7-BFA7-B0CC7D61F5AE}
 		{5B35F67C-0770-4762-B9C3-47AEEA7336B2} = {6760C8C3-4C15-4A05-A075-B3C627F2A093}
+		{3CAD2E5F-B3C9-4AE1-9586-53FE90C8A410} = {6760C8C3-4C15-4A05-A075-B3C627F2A093}
 	EndGlobalSection
 EndGlobal

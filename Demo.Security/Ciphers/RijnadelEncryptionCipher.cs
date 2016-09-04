@@ -18,6 +18,12 @@ namespace Demo.Security.Ciphers
 
         private const int DerivationIterations = 1000;
 
+        /// <summary>
+        /// Encrypts a given <see cref="SecureString"/> input using a supplied key.
+        /// </summary>
+        /// <param name="input">The input to be encrypted.</param>
+        /// <param name="key">The key to be used in the encryption cipher.</param>
+        /// <returns>The encrypted string.</returns>
         public string Encrypt(SecureString input, string key)
         {
             //Salt and IV are randomly generated each time, but are prepended to encrypted cipher text
@@ -29,6 +35,14 @@ namespace Demo.Security.Ciphers
             return Encrypt(input, key, saltBytes, ivBytes);
         }
 
+        /// <summary>
+        /// Encrypts a given <see cref="SecureString"/> input using a supplied key, salt and IV.
+        /// </summary>
+        /// <param name="input">The input to be encrypted.</param>
+        /// <param name="key">The key to be used in the encryption cipher.</param>
+        /// <param name="salt">The salt to be used in the encryption cipher.</param>
+        /// <param name="iv">The Initialisation Vector to be used in the encryption cipher.</param>
+        /// <returns>The encrypted string.</returns>
         public string Encrypt(SecureString input, string key, byte[] salt, byte[] iv)
         {
             byte[] inputBytes = Encoding.UTF8.GetBytes(input.ToInSecureString());
@@ -59,6 +73,32 @@ namespace Demo.Security.Ciphers
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Retrieves the salt for an encrypted <see cref="string"/>
+        /// </summary>
+        /// <param name="encryptedData">The encrypyted string.</param>
+        /// <returns>The salt that was used to encrypt the string.</returns>
+        public byte [] GetSalt(string encryptedData)
+        {
+            var cipherTextWithSaltAndIvBytes = Convert.FromBase64String(encryptedData);
+            //get the salt by extracting the first 32 bytes
+            var saltBytes = cipherTextWithSaltAndIvBytes.Take(KeySize / 8).ToArray();
+            return saltBytes;
+        }
+
+        /// <summary>
+        /// Retrieves the IV for an encrypted <see cref="string"/>
+        /// </summary>
+        /// <param name="encryptedData">The encrypyted string.</param>
+        /// <returns>The IV that was used to encrypt the string.</returns>
+        public byte[] GetIV(string encryptedData)
+        {
+            var cipherTextWithSaltAndIvBytes = Convert.FromBase64String(encryptedData);
+            //get the iv by extracting the next 32 bytes
+            var ivBytes = cipherTextWithSaltAndIvBytes.Skip(KeySize / 8).Take(KeySize / 8).ToArray();
+            return ivBytes;
         }
 
         private static byte[] Generate256BitsOfRandomEntropy()
