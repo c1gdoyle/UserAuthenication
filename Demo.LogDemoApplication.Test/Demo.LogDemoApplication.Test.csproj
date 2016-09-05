@@ -43,6 +43,10 @@
       <HintPath>..\packages\Moq.4.5.21\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Prism, Version=6.2.0.0, Culture=neutral, PublicKeyToken=91a96d2a154366d8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Core.6.2.0\lib\net45\Prism.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
   </ItemGroup>
@@ -61,11 +65,16 @@
   <ItemGroup>
     <Compile Include="Authenication\LoginAuthenticationServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewControllers\LoginDemoViewControllerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Demo.DataAccess\Demo.DataAccess.csproj">
       <Project>{15c3cec6-c37f-4346-af8a-534a1582afca}</Project>
       <Name>Demo.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Demo.Presentation\Demo.Presentation.csproj">
+      <Project>{af1b1d3f-3822-4393-9043-2a17fc757b5d}</Project>
+      <Name>Demo.Presentation</Name>
     </ProjectReference>
     <ProjectReference Include="..\Demo.Security\Demo.Security.csproj">
       <Project>{a3ba6fc3-467e-484d-a942-bd3dc194d513}</Project>
@@ -79,6 +88,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

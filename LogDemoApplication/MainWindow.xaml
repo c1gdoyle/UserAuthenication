@@ -40,14 +40,14 @@
                 <dP:PasswordBoxBindingBehaviour Password="{Binding Path=Password}"/>
             </i:Interaction.Behaviors>
         </PasswordBox>
-        <Grid Grid.Row="2"
-              Grid.Column="2"
-              HorizontalAlignment="Right">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <DockPanel Grid.Row="2"
+                    Grid.Column="2"
+                   HorizontalAlignment="Right">
+            <DockPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="5,0,0,0"/>
+                </Style>
+            </DockPanel.Resources>
             <Button Content="Login"
                     Width="120"
                     Padding="5"
@@ -57,8 +57,6 @@
                     Width="120"
                     Padding="5"
                     Command="{Binding Path=ExitCommand}"/>
-
-        </Grid>
-
+        </DockPanel>
     </Grid>
 </Window>

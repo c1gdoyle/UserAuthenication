@@ -1,12 +1,10 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Demo.Presentation.Base
 {
     /// <summary>
     /// Base class for objects that want to do PropertyChanged notifications.
     /// </summary>
-    [Serializable]
     public abstract class NotifierBase : INotifyPropertyChanged, INotifyPropertyChanging
     {
         #region INotifyPropertyChanged Members

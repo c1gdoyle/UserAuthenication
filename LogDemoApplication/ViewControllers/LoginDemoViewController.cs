@@ -1,16 +1,35 @@
 ﻿using System.Security;
 using Demo.Presentation.Base;
+using Demo.Presentation.Dialog;
+using LogDemoApplication.Authenication;
 using Prism.Commands;
 
 namespace LogDemoApplication.ViewControllers
 {
     public class LoginDemoViewController : ViewControllerBase
     {
+        private readonly ILoginAuthenicationService _authenticationService;
+        private readonly IDialogService _dialogService;
         private string _userName;
         private SecureString _password;
 
+        /// <summary>
+        /// Intialises a new default instance of <see cref="LoginDemoViewController"/>.
+        /// </summary>
         public LoginDemoViewController()
+            :this(new LoginAuthenticationService(), new DialogService())
         {
+        }
+
+        /// <summary>
+        /// Intialises a instance of <see cref="LoginDemoViewController"/> with a specified authenication and dialog service.
+        /// </summary>
+        /// <param name="authenticationService">The authentication service.</param>
+        /// <param name="dialogService">The dialog service.</param>
+        public LoginDemoViewController(ILoginAuthenicationService authenticationService, IDialogService dialogService)
+        {
+            _authenticationService = new LoginAuthenticationService();
+            _dialogService = new DialogService();
             IntialiseCommands();
         }
 
@@ -31,10 +50,12 @@ namespace LogDemoApplication.ViewControllers
                 _userName = value;
                 NotifyPropertyChanged("UserName");
                 LoginCommand.RaiseCanExecuteChanged();
-                //NotifyPropertyChanged("IsLoginEnabled");
             }
         }
 
+        /// <summary>
+        /// Gets or sets a reference to the password.
+        /// </summary>
         public SecureString Password
         {
             get { return _password; }
@@ -67,10 +88,15 @@ namespace LogDemoApplication.ViewControllers
             get;
             private set;
         }
-
-
+        
         private void OnLoginCommand()
         {
+            var result = _authenticationService.Authenicate(UserName, Password);
+
+            if(result != null)
+            {
+                _dialogService.ShowMessage(result.Message, result.IsSuccessful);
+            }
         }
     }
 }

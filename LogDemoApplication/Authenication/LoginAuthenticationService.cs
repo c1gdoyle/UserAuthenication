@@ -2,7 +2,9 @@
 using System.Data;
 using System.Security;
 using Demo.DataAccess.Base;
+using Demo.DataAccess.Utilities;
 using Demo.Security.Base;
+using Demo.Security.Ciphers;
 
 namespace LogDemoApplication.Authenication
 {
@@ -15,6 +17,13 @@ namespace LogDemoApplication.Authenication
         private readonly IDataAccessLayerFacade _dataAccess;
         private readonly IEncryptionCipher _encryptionCipher;
         private readonly string _encryptionKey;
+
+        public LoginAuthenticationService()
+        {
+            _encryptionCipher = new RijnadelEncryptionCipher();
+            _dataAccess = new DataAccessLayerFacade(() => new System.Data.SqlClient.SqlConnection(@"Data Source=CONOR-PC\SQLEXPRESS; Initial Catalog=HumanResources; Integrated Security=SSPI;"));
+            _encryptionKey = "MyEncryptionKey";
+        }
 
         /// <summary>
         /// Initialises a new instance of <see cref="LoginAuthenticationService"/> with a specified dataAccess facade, cipher
@@ -55,7 +64,7 @@ namespace LogDemoApplication.Authenication
         {
             DataTable table = 
                 _dataAccess.FillTable(
-                    "SELECT password FROM dbo.Users WHERE userId = {0}", 
+                    "SELECT password FROM dbo.Users WHERE userName = '{0}'", 
                     "AuthenicationResult", 
                     new object[] { userId });
 
