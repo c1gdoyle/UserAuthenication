@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Security;
 using Demo.DataAccess.Base;
@@ -21,8 +22,8 @@ namespace LogDemoApplication.Authenication
         public LoginAuthenticationService()
         {
             _encryptionCipher = new RijnadelEncryptionCipher();
-            _dataAccess = new DataAccessLayerFacade(() => new System.Data.SqlClient.SqlConnection(@"Data Source=CONOR-PC\SQLEXPRESS; Initial Catalog=HumanResources; Integrated Security=SSPI;"));
-            _encryptionKey = "MyEncryptionKey";
+            _dataAccess = new DataAccessLayerFacade(() => new System.Data.SqlClient.SqlConnection(ConfigurationManager.ConnectionStrings["HumanResources"].ConnectionString));
+            _encryptionKey = ConfigurationManager.AppSettings["EncryptionKey"];
         }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace LogDemoApplication.Authenication
 
             if (!TryGetPassWord(table, out dataBasePassword))
             {
-                return new AuthenicationResult { IsSuccessful = false, Message = "Login Authenication Failed. Invalid userId or password." };
+                return new AuthenicationResult { IsSuccessful = false, Message = "Login Authenication Failed. Invalid UserName or Password." };
             }
 
             return ComparePasswords(password, dataBasePassword);
@@ -95,7 +96,7 @@ namespace LogDemoApplication.Authenication
             }
             else
             {
-                return new AuthenicationResult { IsSuccessful = false, Message = "Login Authenication Failed. Invalid userId or password." };
+                return new AuthenicationResult { IsSuccessful = false, Message = "Login Authenication Failed. Invalid UserName or Password." };
             }
         }
     }

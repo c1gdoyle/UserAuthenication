@@ -28,8 +28,8 @@ namespace LogDemoApplication.ViewControllers
         /// <param name="dialogService">The dialog service.</param>
         public LoginDemoViewController(ILoginAuthenicationService authenticationService, IDialogService dialogService)
         {
-            _authenticationService = new LoginAuthenticationService();
-            _dialogService = new DialogService();
+            _authenticationService = authenticationService;
+            _dialogService = dialogService;
             IntialiseCommands();
         }
 
