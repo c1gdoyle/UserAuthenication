@@ -46,6 +46,7 @@
     <Compile Include="Base\IDataAccessLayerFacade.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\DataAccessLayerException.cs" />
     <Compile Include="Utilities\DataAccessLayerFacade.cs" />
   </ItemGroup>
   <ItemGroup />

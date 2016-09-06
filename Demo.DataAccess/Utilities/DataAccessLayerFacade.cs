@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Demo.DataAccess.Base;
 
 namespace Demo.DataAccess.Utilities
@@ -13,6 +10,7 @@ namespace Demo.DataAccess.Utilities
     {
         private readonly Func<IDbConnection> _connectionFactory;
         private const int DefaultCommandTimeout = 300;
+        private readonly int _retryCount;
 
         /// <summary>
         /// Initialises a new instance of <see cref="DataAccessLayerFacade"/> with a
@@ -20,8 +18,21 @@ namespace Demo.DataAccess.Utilities
         /// </summary>
         /// <param name="connectionFactory">The function used to generate a connection for the data-base.</param>
         public DataAccessLayerFacade(Func<IDbConnection> connectionFactory)
+            :this(connectionFactory, 3)
+        {        
+        }
+
+        /// <summary>
+        /// Initialises a new instance of <see cref="DataAccessLayerFacade"/> with a
+        /// specifed function to create a connection to the data-base and number of times to
+        /// to retry a failed call to the data-base before returning an error.
+        /// </summary>
+        /// <param name="connectionFactory">The function used to generate a connection for the data-base.</param>
+        /// <param name="retryCount">The number of retry allowed. By default this will be 3.</param>
+        public DataAccessLayerFacade(Func<IDbConnection> connectionFactory, int retryCount)
         {
             _connectionFactory = connectionFactory;
+            _retryCount = retryCount;
         }
 
         #region IDataAccessLayerFacade Members
@@ -33,21 +44,57 @@ namespace Demo.DataAccess.Utilities
             get { return _connectionFactory; }
         }
 
+        /// <summary>
+        /// Executes a query against the configured data-base, creates a <see cref="DataTable"/> of the
+        /// given name and fills that table with the results of the query.
+        /// </summary>
+        /// <param name="query">The Sql query to execute against the Database.</param>
+        /// <param name="dataTableName">The name of the DataTable to be created.</param>
+        /// <returns>The newly created table.</returns>
+        /// <exception cref="Demo.DataAccess.Utilities.DataAccessLayerException">Call to the data-base returned a warning or error.</exception>
         public DataTable FillTable(string query, string dataTableName)
         {
             return FillTable(query, dataTableName, new DbParameter[0], DefaultCommandTimeout, 1);
         }
 
-        public DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters)
-        {
-            return FillTable(query, dataTableName, queryParameters, DefaultCommandTimeout, 1);
-        }
-
+        /// <summary>
+        /// Executes a query against the configured data-base using a specified time-out, creates a <see cref="DataTable"/> of the
+        /// given name and fills that table with the results of the query.
+        /// </summary>
+        /// <param name="query">The Sql query to execute against the Database.</param>
+        /// <param name="dataTableName">The name of the DataTable to be created.</param>
+        /// <param name="commandTimeout">The time-out for the SQL query to execute.</param>
+        /// <returns>The newly created table.</returns>
+        /// <exception cref="Demo.DataAccess.Utilities.DataAccessLayerException">Call to the data-base returned a warning or error.</exception>
         public DataTable FillTable(string query, string dataTableName, int commandTimeout)
         {
             return FillTable(query, dataTableName, new DbParameter[0], commandTimeout, 1);
         }
 
+        /// <summary>
+        /// Executes a query against the configured data-base using specified query parameters, creates a <see cref="DataTable"/> of the
+        /// given name and fills that table with the results of the query.
+        /// </summary>
+        /// <param name="query">The Sql query to execute against the Database.</param>
+        /// <param name="dataTableName">The name of the DataTable to be created.</param>
+        /// <param name="queryParameters">Any parameters to be used in the SQL query.</param>
+        /// <returns>The newly created table.</returns>
+        /// <exception cref="Demo.DataAccess.Utilities.DataAccessLayerException">Call to the data-base returned a warning or error.</exception>
+        public DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters)
+        {
+            return FillTable(query, dataTableName, queryParameters, DefaultCommandTimeout, 1);
+        }
+
+        /// <summary>
+        /// Executes a query against the configured data-base using a specified time-out and query parameters, creates a <see cref="DataTable"/> of the
+        /// given name and fills that table with the results of the query.
+        /// </summary>
+        /// <param name="query">The Sql query to execute against the Database.</param>
+        /// <param name="dataTableName">The name of the DataTable to be created.</param>
+        /// <param name="queryParameters">Any parameters to be used in the SQL query.</param>
+        /// <param name="commandTimeout">The time-out for the SQL query to execute.</param>
+        /// <returns>The newly created table.</returns>
+        /// <exception cref="Demo.DataAccess.Utilities.DataAccessLayerException">Call to the data-base returned a warning or error.</exception>
         public DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters, int commandTimeout)
         {
             return FillTable(query, dataTableName, queryParameters, commandTimeout, 1);
@@ -64,16 +111,20 @@ namespace Demo.DataAccess.Utilities
                 }
                 catch (System.Data.SqlClient.SqlException sqlEx)
                 {
-                    if (RetriesExceeded(sqlEx, retryCount))
+                    if (RetriesExceeded(retryCount))
                     {
-                        throw;
+                        throw new DataAccessLayerException(
+                            string.Format("Failed calls to datasource exceeded allowed retries {0}.", retryCount), 
+                            sqlEx);
                     }
                 }
                 catch (System.Data.Common.DbException dbEx)
                 {
-                    if (RetriesExceeded(dbEx, retryCount))
+                    if (RetriesExceeded(retryCount))
                     {
-                        throw;
+                        throw new DataAccessLayerException(
+                            string.Format("Failed calls to datasource exceeded allowed retries {0}", retryCount), 
+                            dbEx);
                     }
                 }
             }
@@ -170,9 +221,9 @@ namespace Demo.DataAccess.Utilities
             }
         }
 
-        private bool RetriesExceeded(Exception ex, int retryCount)
+        private bool RetriesExceeded(int retryCount)
         {
-            if (retryCount == 3)
+            if (retryCount == _retryCount)
             {
                 return true;
             }

@@ -22,6 +22,7 @@ namespace Demo.DataAccess.Base
         /// <param name="query">The Sql query to execute against the Database.</param>
         /// <param name="dataTableName">The name of the DataTable to be created.</param>
         /// <returns>The newly created table.</returns>
+        /// <exception cref="Demo.DataAccess.Utilities.DataAccessLayerException">Call to the data-base returned a warning or error.</exception>
         DataTable FillTable(string query, string dataTableName);
 
         /// <summary>
@@ -32,6 +33,7 @@ namespace Demo.DataAccess.Base
         /// <param name="dataTableName">The name of the DataTable to be created.</param>
         /// <param name="commandTimeout">The time-out for the SQL query to execute.</param>
         /// <returns>The newly created table.</returns>
+        /// <exception cref="Demo.DataAccess.Utilities.DataAccessLayerException">Call to the data-base returned a warning or error.</exception>
         DataTable FillTable(string query, string dataTableName, int commandTimeout);
 
         /// <summary>
@@ -42,6 +44,7 @@ namespace Demo.DataAccess.Base
         /// <param name="dataTableName">The name of the DataTable to be created.</param>
         /// <param name="queryParameters">Any parameters to be used in the SQL query.</param>
         /// <returns>The newly created table.</returns>
+        /// <exception cref="Demo.DataAccess.Utilities.DataAccessLayerException">Call to the data-base returned a warning or error.</exception>
         DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters);
 
         /// <summary>
@@ -53,6 +56,7 @@ namespace Demo.DataAccess.Base
         /// <param name="queryParameters">Any parameters to be used in the SQL query.</param>
         /// <param name="commandTimeout">The time-out for the SQL query to execute.</param>
         /// <returns>The newly created table.</returns>
+        /// <exception cref="Demo.DataAccess.Utilities.DataAccessLayerException">Call to the data-base returned a warning or error.</exception>
         DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters, int commandTimeout);
     }
 }

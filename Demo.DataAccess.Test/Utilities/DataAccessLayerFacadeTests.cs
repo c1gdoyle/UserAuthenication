@@ -96,7 +96,7 @@ namespace Demo.DataAccess.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DbExceptionStub))]
+        [ExpectedException(typeof(DataAccessLayerException))]
         public void DataAccessLaterFacadeThrowsWhenRetryCountIsExceeded()
         {
             int retryCount = 0;

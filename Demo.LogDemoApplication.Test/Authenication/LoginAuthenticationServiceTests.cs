@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.Common;
 using Demo.DataAccess.Base;
+using Demo.DataAccess.Utilities;
 using Demo.Security.Ciphers;
 using Demo.Security.Extensions;
 using LogDemoApplication.Authenication;
@@ -98,7 +99,7 @@ namespace Demo.LogDemoApplication.Test.Authenication
         {
             var dataAccess = new Mock<IDataAccessLayerFacade>();
             dataAccess.Setup(da => da.FillTable(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DbParameter[]>())).
-                Throws(new Exception("Failed to connection to SQL database"));
+                Throws(new DataAccessLayerException("Failed to connection to SQL database"));
 
             return dataAccess;
         }

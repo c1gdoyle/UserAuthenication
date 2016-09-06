@@ -1,5 +1,4 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data;
 using System.Security;
 using Demo.DataAccess.Base;
@@ -48,7 +47,7 @@ namespace LogDemoApplication.Authenication
             {
                 table = GetData(userId);
             }
-            catch(Exception)
+            catch(DataAccessLayerException)
             {
                 return new AuthenicationResult { IsSuccessful = false, Message = "Login Authenication Failed. Unable to connect to database. Please contact support." };
             }
