@@ -18,6 +18,9 @@ namespace LogDemoApplication.Authenication
         private readonly IEncryptionCipher _encryptionCipher;
         private readonly string _encryptionKey;
 
+        /// <summary>
+        /// Intialises an new default instance of <see cref="LoginAuthenticationService"/>.
+        /// </summary>
         public LoginAuthenticationService()
         {
             _encryptionCipher = new RijnadelEncryptionCipher();

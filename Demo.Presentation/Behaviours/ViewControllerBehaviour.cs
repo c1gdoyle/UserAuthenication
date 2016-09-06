@@ -27,6 +27,7 @@ namespace Demo.Presentation.Behaviours
             Window w = sender as Window;
             if (w == null)
             {
+                //sender is a child element
                 w = Window.GetWindow(sender);
             }
 
@@ -38,26 +39,32 @@ namespace Demo.Presentation.Behaviours
                     EventHandler<WindowShouldCloseEventArgs> windowShouldClose = null;
                     windowShouldClose = (x, y) =>
                     {
+                        //check if the call is on the same thread as the window
                         //need to marshal onto UI thread
                         if (!w.Dispatcher.CheckAccess())
                         {
+                            //different thread so invoke async on the dispatcher's thread
                             w.Dispatcher.Invoke(windowShouldClose, x, y);
                         }
                         else
                         {
-                            //  we can try to check if this was a a call to ShowDialog, but
+                            //ok thread is being called on the same thread as the window
+
+                            //now check if the current thread is modal, this should mean that the window was shown using ShowDialog
                             if (ComponentDispatcher.IsThreadModal)
                             {
+                                //window should be Modal, i.e. a child window that is owned by a parent window
                                 try
                                 {
+                                    //set the DialogResult value, close this window and return to the parent window
                                     //this will throw if the Window was not shown using ShowDialog
                                     w.DialogResult = y.DialogResult;
                                 }
                                 catch (InvalidOperationException)
                                 {
-
                                 }
                             }
+                            //window is not modal so just close as normal
                             w.Close();
                         }
                     };
