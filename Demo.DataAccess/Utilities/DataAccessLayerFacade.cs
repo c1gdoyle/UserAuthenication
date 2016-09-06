@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,26 +35,26 @@ namespace Demo.DataAccess.Utilities
 
         public DataTable FillTable(string query, string dataTableName)
         {
-            return FillTable(query, dataTableName, new object[0], DefaultCommandTimeout, 1);
+            return FillTable(query, dataTableName, new DbParameter[0], DefaultCommandTimeout, 1);
         }
 
-        public DataTable FillTable(string query, string dataTableName, object[] queryParameters)
+        public DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters)
         {
             return FillTable(query, dataTableName, queryParameters, DefaultCommandTimeout, 1);
         }
 
         public DataTable FillTable(string query, string dataTableName, int commandTimeout)
         {
-            return FillTable(query, dataTableName, new object[0], commandTimeout, 1);
+            return FillTable(query, dataTableName, new DbParameter[0], commandTimeout, 1);
         }
 
-        public DataTable FillTable(string query, string dataTableName, object[] queryParameters, int commandTimeout)
+        public DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters, int commandTimeout)
         {
             return FillTable(query, dataTableName, queryParameters, commandTimeout, 1);
         }
         #endregion IDataAccessLayerFacade Members
 
-        private DataTable FillTable(string query, string dataTableName, object[] queryParameters, int commandTimeout, int retryCount)
+        private DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters, int commandTimeout, int retryCount)
         {
             using (IDbConnection connection = ConnectionFactory())
             {
@@ -80,13 +81,14 @@ namespace Demo.DataAccess.Utilities
             return FillTable(query, dataTableName, queryParameters, commandTimeout, ++retryCount);
         }
 
-        private DataTable FillTable(IDbConnection connection, string query, string dataTableName, object[] queryParameters, int commandTimeout)
+        private DataTable FillTable(IDbConnection connection, string query, string dataTableName, DbParameter[] queryParameters, int commandTimeout)
         {
             OpenConnection(connection);
             using (IDbCommand cmd = connection.CreateCommand())
             {
-                cmd.CommandText = string.Format(query, queryParameters);
+                cmd.CommandText = query;
                 cmd.CommandTimeout = commandTimeout;
+                queryParameters.ToList().ForEach(p => cmd.Parameters.Add(p));
 
                 using (IDataReader reader = cmd.ExecuteReader())
                 {

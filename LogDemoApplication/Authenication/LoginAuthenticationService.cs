@@ -65,9 +65,9 @@ namespace LogDemoApplication.Authenication
         {
             DataTable table = 
                 _dataAccess.FillTable(
-                    "SELECT password FROM dbo.Users WHERE userName = '{0}'", 
+                    "SELECT password FROM dbo.Users WHERE userName = @userName", 
                     "AuthenicationResult", 
-                    new object[] { userId });
+                    new System.Data.Common.DbParameter[] { new System.Data.SqlClient.SqlParameter("@userName", userId) });
 
             return table;
         }

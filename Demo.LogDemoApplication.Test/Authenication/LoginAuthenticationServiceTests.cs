@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.Common;
 using Demo.DataAccess.Base;
-using Demo.Security.Base;
 using Demo.Security.Ciphers;
 using Demo.Security.Extensions;
 using LogDemoApplication.Authenication;
@@ -27,7 +23,7 @@ namespace Demo.LogDemoApplication.Test.Authenication
         [TestMethod]
         public void LoginAuthenticationServiceInitialises()
         {
-            var service = new LoginAuthenticationService(MockDataAcess().Object, new RijnadelEncryptionCipher(), EncryptionKey);
+            var service = new LoginAuthenticationService(MockDataAccess().Object, new RijnadelEncryptionCipher(), EncryptionKey);
 
             Assert.IsNotNull(service);
         }
@@ -35,7 +31,7 @@ namespace Demo.LogDemoApplication.Test.Authenication
         [TestMethod]
         public void LoginAuthenicationServiceReturnsSuccessfulResultIfPasswordsMatch()
         {
-            var service = new LoginAuthenticationService(MockDataAcess().Object, new RijnadelEncryptionCipher(), EncryptionKey);
+            var service = new LoginAuthenticationService(MockDataAccess().Object, new RijnadelEncryptionCipher(), EncryptionKey);
 
             AuthenicationResult result = service.Authenicate(UserId, CorrectPassword.ToSecureString());
 
@@ -47,25 +43,25 @@ namespace Demo.LogDemoApplication.Test.Authenication
         [TestMethod]
         public void LoginAuthenicationServiceReturnFailedResultIfPasswordsDoNotMatch()
         {
-            var service = new LoginAuthenticationService(MockDataAcess().Object, new RijnadelEncryptionCipher(), EncryptionKey);
+            var service = new LoginAuthenticationService(MockDataAccess().Object, new RijnadelEncryptionCipher(), EncryptionKey);
 
             AuthenicationResult result = service.Authenicate(UserId, InCorrectPassword.ToSecureString());
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.IsSuccessful);
-            Assert.AreEqual("Login Authenication Failed. Invalid userId or password.", result.Message);
+            Assert.AreEqual("Login Authenication Failed. Invalid UserName or Password.", result.Message);
         }
 
         [TestMethod]
         public void LoginAuthenicationServiceReturnsFailedResultIfUserIdIsNotInDataBase()
         {
-            var service = new LoginAuthenticationService(MockDataAcess().Object, new RijnadelEncryptionCipher(), EncryptionKey);
+            var service = new LoginAuthenticationService(MockDataAccessForUserNotInDatabase().Object, new RijnadelEncryptionCipher(), EncryptionKey);
 
             AuthenicationResult result = service.Authenicate(UnRegisteredUser, InCorrectPassword.ToSecureString());
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.IsSuccessful);
-            Assert.AreEqual("Login Authenication Failed. Invalid userId or password.", result.Message);
+            Assert.AreEqual("Login Authenication Failed. Invalid UserName or Password.", result.Message);
         }
 
         [TestMethod]
@@ -80,10 +76,20 @@ namespace Demo.LogDemoApplication.Test.Authenication
             Assert.AreEqual("Login Authenication Failed. Unable to connect to database. Please contact support.", result.Message);
         }
 
-        private Mock<IDataAccessLayerFacade> MockDataAcess()
+        private Mock<IDataAccessLayerFacade> MockDataAccess()
         {
             var dataAccess =  new Mock<IDataAccessLayerFacade>();
-            dataAccess.Setup(da => da.FillTable(It.IsAny<string>(), It.IsAny<string>(), new object[] { UserId})).Returns(FakeResults);
+            dataAccess.Setup(da => da.FillTable(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DbParameter []>())).
+                Returns(FakeResults);
+
+            return dataAccess;
+        }
+
+        private Mock<IDataAccessLayerFacade> MockDataAccessForUserNotInDatabase()
+        {
+            var dataAccess = new Mock<IDataAccessLayerFacade>();
+            dataAccess.Setup(da => da.FillTable(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DbParameter[]>())).
+                Returns(null as DataTable);
 
             return dataAccess;
         }
@@ -91,7 +97,8 @@ namespace Demo.LogDemoApplication.Test.Authenication
         private Mock<IDataAccessLayerFacade> MockFailingDataAccess()
         {
             var dataAccess = new Mock<IDataAccessLayerFacade>();
-            dataAccess.Setup(da => da.FillTable(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object[]>())).Throws(new Exception("Failed to connection to SQL database"));
+            dataAccess.Setup(da => da.FillTable(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DbParameter[]>())).
+                Throws(new Exception("Failed to connection to SQL database"));
 
             return dataAccess;
         }

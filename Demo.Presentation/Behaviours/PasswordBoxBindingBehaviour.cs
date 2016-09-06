@@ -44,7 +44,9 @@ namespace Demo.Presentation.Behaviours
             {
                 PropertyInfo property = binding.DataItem.GetType().GetProperty(binding.ParentBinding.Path.Path);
                 if (property != null)
+                {
                     property.SetValue(binding.DataItem, AssociatedObject.SecurePassword, null);
+                }
             }
         }
     }

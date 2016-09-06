@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.Common;
 
 namespace Demo.DataAccess.Base
 {
@@ -41,7 +42,7 @@ namespace Demo.DataAccess.Base
         /// <param name="dataTableName">The name of the DataTable to be created.</param>
         /// <param name="queryParameters">Any parameters to be used in the SQL query.</param>
         /// <returns>The newly created table.</returns>
-        DataTable FillTable(string query, string dataTableName, object[] queryParameters);
+        DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters);
 
         /// <summary>
         /// Executes a query against the configured data-base using a specified time-out and query parameters, creates a <see cref="DataTable"/> of the
@@ -52,6 +53,6 @@ namespace Demo.DataAccess.Base
         /// <param name="queryParameters">Any parameters to be used in the SQL query.</param>
         /// <param name="commandTimeout">The time-out for the SQL query to execute.</param>
         /// <returns>The newly created table.</returns>
-        DataTable FillTable(string query, string dataTableName, object[] queryParameters, int commandTimeout);
+        DataTable FillTable(string query, string dataTableName, DbParameter[] queryParameters, int commandTimeout);
     }
 }
