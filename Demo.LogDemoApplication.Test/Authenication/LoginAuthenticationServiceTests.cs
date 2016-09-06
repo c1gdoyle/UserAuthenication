@@ -18,7 +18,7 @@ namespace Demo.LogDemoApplication.Test.Authenication
         private const string UnRegisteredUser = "Lucy";
         private const string CorrectPassword = "password1";
         private const string InCorrectPassword = "password2";
-        private const string HashedPassword = "K4o4kfaFKGAptQlQyYJeMLcDaNVrKpCw6xJCEtNVxesrijiR9oUoYCm1CVDJgl4wtwNo1WsqkLDrEkIS01XF6xfVTLy+5gSEETkO4WV9yP9Ij+DWaZZTYiFYFWUCMsJ9";
+        private const string HashedPassword = "bHoFtpmknfxfB8s8qvlT7WvHfim5mCrmbDfBV9lZnL5I/bSeXP9laC7Qm5EDEAxdfFNTUdcttdEVSvkBebDFUQTmOGy2EJ+VYuFOKgTRx/0+JOPEekg/3O8LoiVRTgh7";
         private const string EncryptionKey = "MyEncryptionKey";
 
         [TestMethod]
@@ -27,6 +27,19 @@ namespace Demo.LogDemoApplication.Test.Authenication
             var service = new LoginAuthenticationService(MockDataAccess().Object, new RijnadelEncryptionCipher(), EncryptionKey);
 
             Assert.IsNotNull(service);
+        }
+
+        //[TestMethod]
+        public void Login()
+        {
+            var cipher = new RijnadelEncryptionCipher();
+
+            string hashedPassword = cipher.Encrypt(CorrectPassword.ToSecureString(), EncryptionKey);
+
+            byte[] salt = cipher.GetSalt(hashedPassword);
+            byte[] iv = cipher.GetIV(hashedPassword);
+
+            string result = cipher.Encrypt(CorrectPassword.ToSecureString(), EncryptionKey, salt, iv);
         }
 
         [TestMethod]

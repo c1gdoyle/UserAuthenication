@@ -59,14 +59,14 @@ namespace Demo.Security.Ciphers
                     using (var memoryStream = new MemoryStream())
                     {
                         using (var cryptoStream = new CryptoStream(memoryStream,
-                            rijndael.CreateEncryptor(keyBytes, salt),
+                            rijndael.CreateEncryptor(keyBytes, iv),
                             CryptoStreamMode.Write))
                         {
                             cryptoStream.Write(inputBytes, 0, inputBytes.Length);
                             cryptoStream.FlushFinalBlock();
                             //Create the final bytes as a conatenation of the random salt, IV and Cipher bytes
                             var cipherTextBytes = salt;
-                            cipherTextBytes = cipherTextBytes.Concat(salt).ToArray();
+                            cipherTextBytes = cipherTextBytes.Concat(iv).ToArray();
                             cipherTextBytes = cipherTextBytes.Concat(memoryStream.ToArray()).ToArray();
                             return Convert.ToBase64String(cipherTextBytes);
                         }
