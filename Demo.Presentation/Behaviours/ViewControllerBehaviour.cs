@@ -63,8 +63,7 @@ namespace Demo.Presentation.Behaviours
                                 catch (InvalidOperationException)
                                 {
                                 }
-                            }
-                            //window is not modal so just close as normal
+                            }                           
                             w.Close();
                         }
                     };
