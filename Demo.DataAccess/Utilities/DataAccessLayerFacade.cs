@@ -148,25 +148,6 @@ namespace Demo.DataAccess.Utilities
             }
         }
 
-        private void ExecuteUpdate(string updateQuery)
-        {
-            using (IDbConnection connection = ConnectionFactory())
-            {
-                ExecuteUpdate(connection, updateQuery);
-            }
-        }
-
-        private void ExecuteUpdate(IDbConnection connection, string updateQuery)
-        {
-            OpenConnection(connection);
-
-            using (IDbCommand command = connection.CreateCommand())
-            {
-                command.CommandText = updateQuery;
-                command.ExecuteNonQuery();
-            }
-        }
-
         private DataTable PopulateDataTable(IDataReader reader, string dataTableName)
         {
             int count = 0;
